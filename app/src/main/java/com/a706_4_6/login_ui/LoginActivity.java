@@ -3,9 +3,7 @@ package com.a706_4_6.login_ui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -32,8 +30,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.*;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
@@ -83,7 +79,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mNumberSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mNumberSignInButton = (Button) findViewById(R.id.number_sign_in_button);
         mNumberSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -110,7 +106,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mPhoneNumberView.getText().toString();
+        String number = mPhoneNumberView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
@@ -124,11 +120,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         // Check for a valid number.
-        if (TextUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(number)) {
             mPhoneNumberView.setError(getString(R.string.error_field_required));
             focusView = mPhoneNumberView;
             cancel = true;
-        } else if (!isNumberValid(email)) {
+        } else if (!isNumberValid(number)) {
             mPhoneNumberView.setError(getString(R.string.error_invalid_number));
             focusView = mPhoneNumberView;
             cancel = true;
@@ -142,7 +138,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(number, password);
             mAuthTask.execute((Void) null);
         }
     }
@@ -221,6 +217,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         addNumbersToAutoComplete(emails);
+
     }
 
     @Override
@@ -291,7 +288,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
-                finish();
+                Intent it = new Intent(LoginActivity.this,AfterActivity.class);
+                startActivity(it);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
